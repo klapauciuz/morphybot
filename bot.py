@@ -27,7 +27,6 @@ def handle(msg):
 		# создаем словарь
 		d = [(w, morph.parse(w)[0].tag.POS) for w in sentence]
 		counts = Counter(tag for word,tag in d)
-		# print counts
 
 		# считаем количество глаголов, существительных и прилагательных и формируем ответ
 		resp = '%s verbs, %s nouns, %s adjectives' % (counts['VERB'], counts['NOUN'], counts['ADJF'] + counts['ADJS'])
