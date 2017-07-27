@@ -21,14 +21,11 @@ def handle(msg):
 	if not ad.is_cyrillic(sentence):
 		bot.sendMessage(chat_id, 'Please enter Russian sentence')
 	else:
-		d = []
-
 		# удаляем ненужные символы и создаем массив из слов
 		sentence = [word.strip(string.punctuation) for word in sentence.split()]
 
 		# создаем словарь
-		for w in sentence:
-			d.append((w, morph.parse(w)[0].tag.POS))
+		d = [(w, morph.parse(w)[0].tag.POS) for w in sentence]
 		counts = Counter(tag for word,tag in d)
 		# print counts
 
