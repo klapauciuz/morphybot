@@ -6,12 +6,12 @@ import telepot
 from telepot.loop import MessageLoop
 import time
 from collections import Counter
+import pytest
 
 from alphabet_detector import AlphabetDetector
 ad = AlphabetDetector()
 
 morph = pymorphy2.MorphAnalyzer()
-
 
 def handle(msg):
 	chat_id = msg['chat']['id']
@@ -19,7 +19,7 @@ def handle(msg):
 
 	# определяем русский язык
 	if not ad.is_cyrillic(sentence):
-		bot.sendMessage(chat_id, 'Please enter Russian sentence')
+		resp = 'Please enter Russian sentence'
 	else:
 		# удаляем ненужные символы и создаем массив из слов
 		sentence = [word.strip(string.punctuation) for word in sentence.split()]
@@ -32,12 +32,23 @@ def handle(msg):
 		# считаем количество глаголов, существительных и прилагательных и формируем ответ
 		resp = '%s verbs, %s nouns, %s adjectives' % (counts['VERB'], counts['NOUN'], counts['ADJF'] + counts['ADJS'])
 
-		bot.sendMessage(chat_id, resp)
+	bot.sendMessage(chat_id, resp)
+
+	return resp
 
 
 bot = telepot.Bot('443024916:AAHXoCRAQHDWslM10k0x-yrF4wx-Ca-amxc')
+
+
+# pytest
+# type 'py.test bot.py' for testing
+msg = {'chat': {'id': 105506007}, 'text': u'Удивительно, почему паразиты используют столь сложные стратегии, в то время когда, казалось бы, природа вообще предпочитает простые решения. Однако же эти манипуляции, хотя и запутанные, наверняка не следуют из какого-то сознательного расчета.'}
+assert handle(msg) == '3 verbs, 7 nouns, 6 adjectives'
+
 print bot.getMe()
 
+
 MessageLoop(bot, handle).run_as_thread()
+
 while 1:
 	time.sleep(10)
